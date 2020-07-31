@@ -1224,11 +1224,16 @@ class Worksheet implements IComparable
      */
     public function getCellByColumnAndRow($columnIndex, $row, $createIfNotExists = true)
     {
+
         $columnLetter = Coordinate::stringFromColumnIndex($columnIndex);
         $coordinate = $columnLetter . $row;
-
+        
         if ($this->cellCollection->has($coordinate)) {
-            return $this->cellCollection->get($coordinate);
+            $return = $this->cellCollection->get($coordinate);
+            if (mb_strlen($return) == 0) {
+                $return->setValueExplicit("", DataType::TYPE_NULL);
+            }
+            return $return;
         }
 
         // Create new cell object, if required
